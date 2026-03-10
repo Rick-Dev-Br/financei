@@ -50,8 +50,16 @@ class LancamentoController extends Controller
     public function create(): View
     {
         return view('lancamentos.create', [
-            'contas' => Conta::query()->where('user_id', (int) Auth::id())->where('ativa', true)->orderBy('nome')->get(),
-            'categorias' => Categoria::query()->where('user_id', (int) Auth::id())->where('ativa', true)->orderBy('nome')->get(),
+            'contas' => Conta::query()
+                ->where('user_id', (int) Auth::id())
+                ->where('ativa', true)
+                ->orderBy('nome')
+                ->get(),
+            'categorias' => Categoria::query()
+                ->where('user_id', (int) Auth::id())
+                ->where('ativa', true)
+                ->orderBy('nome')
+                ->get(),
         ]);
     }
 
@@ -91,8 +99,14 @@ class LancamentoController extends Controller
 
         return view('lancamentos.edit', [
             'lancamento' => $lancamento,
-            'contas' => Conta::query()->where('user_id', (int) Auth::id())->orderBy('nome')->get(),
-            'categorias' => Categoria::query()->where('user_id', (int) Auth::id())->orderBy('nome')->get(),
+            'contas' => Conta::query()
+                ->where('user_id', (int) Auth::id())
+                ->orderBy('nome')
+                ->get(),
+            'categorias' => Categoria::query()
+                ->where('user_id', (int) Auth::id())
+                ->orderBy('nome')
+                ->get(),
         ]);
     }
 
@@ -102,6 +116,7 @@ class LancamentoController extends Controller
 
         $dados = $this->validar($request);
         $dados = $this->normalizarRecorrencia($dados);
+
         $lancamento->update($dados);
 
         return redirect()->route('lancamentos.index')->with('success', 'Lancamento atualizado com sucesso.');
