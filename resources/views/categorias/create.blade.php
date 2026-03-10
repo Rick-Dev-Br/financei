@@ -5,7 +5,9 @@
 @section('content')
 <div class="card card-soft">
     <div class="card-body">
-        @include('categorias._form')
+        <form action="{{ route('categorias.store') }}" method="POST">
+            @include('categorias._form')
+        </form>
     </div>
 </div>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Conta;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class ContaController extends Controller
@@ -12,7 +13,7 @@ class ContaController extends Controller
     public function index(): View
     {
         $contas = Conta::query()
-            ->where('user_id', auth()->id())
+            ->where('user_id', (int) Auth::id())
             ->latest()
             ->get();
 
@@ -36,7 +37,7 @@ class ContaController extends Controller
 
         Conta::query()->create([
             ...$dados,
-            'user_id' => auth()->id(),
+            'user_id' => (int) Auth::id(),
             'saldo_atual' => $dados['saldo_inicial'],
             'ativa' => true,
         ]);
@@ -46,14 +47,14 @@ class ContaController extends Controller
 
     public function edit(Conta $conta): View
     {
-        abort_if($conta->user_id !== auth()->id(), 403);
+        abort_if($conta->user_id !== (int) Auth::id(), 403);
 
         return view('contas.edit', compact('conta'));
     }
 
     public function update(Request $request, Conta $conta): RedirectResponse
     {
-        abort_if($conta->user_id !== auth()->id(), 403);
+        abort_if($conta->user_id !== (int) Auth::id(), 403);
 
         $dados = $request->validate([
             'nome' => ['required', 'string', 'max:100'],
@@ -73,7 +74,7 @@ class ContaController extends Controller
 
     public function destroy(Conta $conta): RedirectResponse
     {
-        abort_if($conta->user_id !== auth()->id(), 403);
+        abort_if($conta->user_id !== (int) Auth::id(), 403);
         $conta->delete();
 
         return redirect()->route('contas.index')->with('success', 'Conta removida com sucesso.');

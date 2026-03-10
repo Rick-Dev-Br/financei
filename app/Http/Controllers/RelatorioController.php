@@ -6,6 +6,7 @@ use App\Exports\LancamentosExport;
 use App\Models\Lancamento;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -16,7 +17,7 @@ class RelatorioController extends Controller
     {
         $lancamentos = Lancamento::query()
             ->with(['conta', 'categoria'])
-            ->where('user_id', auth()->id())
+            ->where('user_id', (int) Auth::id())
             ->orderBy('data_vencimento')
             ->get();
 
@@ -27,6 +28,6 @@ class RelatorioController extends Controller
 
     public function lancamentosExcel(Request $request): BinaryFileResponse
     {
-        return Excel::download(new LancamentosExport(auth()->id()), 'lancamentos.xlsx');
+        return Excel::download(new LancamentosExport((int) Auth::id()), 'lancamentos.xlsx');
     }
 }
