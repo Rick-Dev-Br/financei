@@ -82,6 +82,79 @@
 </div>
 
 @push('scripts')
+<<<<<<< HEAD
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+    <script>
+        (() => {
+        const checkbox = document.getElementById('recorrente');
+        const grupoParcelas = document.getElementById('grupo-parcelas');
+        const grupoFrequencia = document.getElementById('grupo-frequencia');
+
+        if (!checkbox || !grupoParcelas || !grupoFrequencia) {
+            return;
+        }
+
+        const atualizar = () => {
+            const ativa = checkbox.checked;
+            grupoParcelas.style.display = ativa ? "block" : "none";
+            grupoFrequencia.style.display = ativa ? "block" : "none";
+        };
+
+        checkbox.addEventListener('change', atualizar);
+        atualizar();
+        })();
+    </script>
+=======
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+>>>>>>> a8c7e0f (ajusta lancamentos)
 <script>
 (() => {
     const checkbox = document.getElementById('recorrente');
@@ -102,4 +175,56 @@
     atualizar();
 })();
 </script>
+<<<<<<< HEAD
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+=======
+>>>>>>> theirs
+>>>>>>> a8c7e0f (ajusta lancamentos)
 @endpush

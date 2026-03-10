@@ -9,6 +9,32 @@ use App\Services\SaldoService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+<<<<<<< HEAD
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> theirs
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> theirs
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> theirs
+=======
+use Illuminate\Support\Facades\Auth;
+>>>>>>> theirs
+=======
+>>>>>>> a8c7e0f (ajusta lancamentos)
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -153,8 +179,63 @@ class LancamentoController extends Controller
     private function validar(Request $request): array
     {
         return $request->validate([
+<<<<<<< HEAD
             'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
             'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+=======
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', auth()->id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', auth()->id())],
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+=======
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
+>>>>>>> theirs
+>>>>>>> a8c7e0f (ajusta lancamentos)
             'tipo' => ['required', 'in:pagar,receber'],
             'descricao' => ['required', 'string', 'max:140'],
             'valor' => ['required', 'numeric', 'min:0.01'],
