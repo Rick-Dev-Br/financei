@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MetaFinanceira;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class MetaFinanceiraController extends Controller
@@ -12,7 +13,7 @@ class MetaFinanceiraController extends Controller
     public function index(): View
     {
         $metas = MetaFinanceira::query()
-            ->where('user_id', auth()->id())
+            ->where('user_id', (int) Auth::id())
             ->orderBy('data_limite')
             ->get();
 
@@ -30,7 +31,7 @@ class MetaFinanceiraController extends Controller
 
         MetaFinanceira::query()->create([
             ...$dados,
-            'user_id' => auth()->id(),
+            'user_id' => (int) Auth::id(),
             'status' => 'ativa',
         ]);
 
@@ -39,14 +40,14 @@ class MetaFinanceiraController extends Controller
 
     public function edit(MetaFinanceira $meta): View
     {
-        abort_if($meta->user_id !== auth()->id(), 403);
+        abort_if($meta->user_id !== (int) Auth::id(), 403);
 
         return view('metas.edit', ['meta' => $meta]);
     }
 
     public function update(Request $request, MetaFinanceira $meta): RedirectResponse
     {
-        abort_if($meta->user_id !== auth()->id(), 403);
+        abort_if($meta->user_id !== (int) Auth::id(), 403);
 
         $meta->update($this->validar($request));
 
@@ -55,7 +56,7 @@ class MetaFinanceiraController extends Controller
 
     public function destroy(MetaFinanceira $meta): RedirectResponse
     {
-        abort_if($meta->user_id !== auth()->id(), 403);
+        abort_if($meta->user_id !== (int) Auth::id(), 403);
         $meta->delete();
 
         return redirect()->route('metas.index')->with('success', 'Meta removida com sucesso.');

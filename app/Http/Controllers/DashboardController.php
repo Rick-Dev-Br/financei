@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\DashboardService;
 use App\Services\PrevisaoFinanceiraService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -18,12 +19,12 @@ class DashboardController extends Controller
     public function index(Request $request): View
     {
         $dados = $this->dashboardService->montar(
-            auth()->id(),
+            (int) Auth::id(),
             $request->string('mes')->toString() ?: null
         );
 
         $previsao = $this->previsaoFinanceiraService->gerar(
-            auth()->id(),
+            (int) Auth::id(),
             (int) $request->integer('horizonte', 6)
         );
 

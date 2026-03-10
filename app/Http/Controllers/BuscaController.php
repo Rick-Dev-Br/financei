@@ -6,6 +6,7 @@ use App\Models\Categoria;
 use App\Models\Conta;
 use App\Models\Lancamento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class BuscaController extends Controller
@@ -20,19 +21,19 @@ class BuscaController extends Controller
 
         if ($q !== '') {
             $lancamentos = Lancamento::query()
-                ->where('user_id', auth()->id())
+                ->where('user_id', (int) Auth::id())
                 ->where('descricao', 'like', "%{$q}%")
                 ->take(15)
                 ->get();
 
             $contas = Conta::query()
-                ->where('user_id', auth()->id())
+                ->where('user_id', (int) Auth::id())
                 ->where('nome', 'like', "%{$q}%")
                 ->take(10)
                 ->get();
 
             $categorias = Categoria::query()
-                ->where('user_id', auth()->id())
+                ->where('user_id', (int) Auth::id())
                 ->where('nome', 'like', "%{$q}%")
                 ->take(10)
                 ->get();

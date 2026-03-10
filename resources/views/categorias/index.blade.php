@@ -16,16 +16,30 @@
                         <th>Categoria</th>
                         <th>Tipo</th>
                         <th>Icone</th>
+                        <th>Cor</th>
                         <th>Status</th>
                         <th class="text-end">Acoes</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse($categorias as $categoria)
+                        @php($icone = $categoria->icone ?: 'bi-tag')
+                        @php($cor = $categoria->cor ?: '#0d6efd')
                         <tr>
                             <td class="fw-semibold">{{ $categoria->nome }}</td>
                             <td><span class="badge {{ $categoria->tipo === 'receber' ? 'text-bg-success' : 'text-bg-danger' }}">{{ ucfirst($categoria->tipo) }}</span></td>
-                            <td><i class="bi {{ $categoria->icone ?: 'bi-tag' }}"></i> {{ $categoria->icone }}</td>
+                            <td>
+                                <span class="d-inline-flex align-items-center gap-2">
+                                    <i class="bi {{ $icone }}"></i>
+                                    <code>{{ $icone }}</code>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="d-inline-flex align-items-center gap-2">
+                                    <span class="rounded border" style="width: 18px; height: 18px; background: {{ str_starts_with($cor, '#') ? $cor : '#'.$cor }};"></span>
+                                    <code>{{ str_starts_with($cor, '#') ? $cor : '#'.$cor }}</code>
+                                </span>
+                            </td>
                             <td>{{ $categoria->ativa ? 'Ativa' : 'Inativa' }}</td>
                             <td class="text-end">
                                 <a href="{{ route('categorias.edit', $categoria) }}" class="btn btn-outline-primary btn-sm">Editar</a>
@@ -36,7 +50,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="5" class="text-center text-secondary">Nenhuma categoria cadastrada.</td></tr>
+                        <tr><td colspan="6" class="text-center text-secondary">Nenhuma categoria cadastrada.</td></tr>
                     @endforelse
                 </tbody>
             </table>

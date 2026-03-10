@@ -9,6 +9,8 @@ use App\Services\SaldoService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class LancamentoController extends Controller
@@ -21,7 +23,7 @@ class LancamentoController extends Controller
     {
         $query = Lancamento::query()
             ->with(['conta', 'categoria'])
-            ->where('user_id', auth()->id());
+            ->where('user_id', (int) Auth::id());
 
         if ($request->filled('mes')) {
             $query->doMes($request->string('mes')->toString());
@@ -48,31 +50,34 @@ class LancamentoController extends Controller
     public function create(): View
     {
         return view('lancamentos.create', [
-            'contas' => Conta::query()->where('user_id', auth()->id())->where('ativa', true)->orderBy('nome')->get(),
-            'categorias' => Categoria::query()->where('user_id', auth()->id())->where('ativa', true)->orderBy('nome')->get(),
+            'contas' => Conta::query()->where('user_id', (int) Auth::id())->where('ativa', true)->orderBy('nome')->get(),
+            'categorias' => Categoria::query()->where('user_id', (int) Auth::id())->where('ativa', true)->orderBy('nome')->get(),
         ]);
     }
 
     public function store(Request $request): RedirectResponse
     {
         $dados = $this->validar($request);
+        $dados = $this->normalizarRecorrencia($dados);
 
-        $lancamento = Lancamento::query()->create([
+        Lancamento::query()->create([
             ...$dados,
-            'user_id' => auth()->id(),
+            'user_id' => (int) Auth::id(),
             'status' => 'pendente',
             'parcela_atual' => 1,
         ]);
 
-        if ($request->boolean('recorrente') && (int) $request->integer('parcelas', 1) > 1) {
-            for ($i = 2; $i <= (int) $request->integer('parcelas'); $i++) {
+        if ($dados['recorrente'] && $dados['parcelas'] > 1) {
+            $intervaloMeses = $this->mesesPorFrequencia($dados['frequencia']);
+
+            for ($i = 2; $i <= $dados['parcelas']; $i++) {
                 Lancamento::query()->create([
                     ...$dados,
-                    'user_id' => auth()->id(),
+                    'user_id' => (int) Auth::id(),
                     'status' => 'pendente',
                     'parcela_atual' => $i,
-                    'data_competencia' => Carbon::parse($dados['data_competencia'])->addMonths($i - 1),
-                    'data_vencimento' => Carbon::parse($dados['data_vencimento'])->addMonths($i - 1),
+                    'data_competencia' => Carbon::parse($dados['data_competencia'])->addMonths(($i - 1) * $intervaloMeses),
+                    'data_vencimento' => Carbon::parse($dados['data_vencimento'])->addMonths(($i - 1) * $intervaloMeses),
                 ]);
             }
         }
@@ -82,20 +87,21 @@ class LancamentoController extends Controller
 
     public function edit(Lancamento $lancamento): View
     {
-        abort_if($lancamento->user_id !== auth()->id(), 403);
+        abort_if($lancamento->user_id !== (int) Auth::id(), 403);
 
         return view('lancamentos.edit', [
             'lancamento' => $lancamento,
-            'contas' => Conta::query()->where('user_id', auth()->id())->orderBy('nome')->get(),
-            'categorias' => Categoria::query()->where('user_id', auth()->id())->orderBy('nome')->get(),
+            'contas' => Conta::query()->where('user_id', (int) Auth::id())->orderBy('nome')->get(),
+            'categorias' => Categoria::query()->where('user_id', (int) Auth::id())->orderBy('nome')->get(),
         ]);
     }
 
     public function update(Request $request, Lancamento $lancamento): RedirectResponse
     {
-        abort_if($lancamento->user_id !== auth()->id(), 403);
+        abort_if($lancamento->user_id !== (int) Auth::id(), 403);
 
         $dados = $this->validar($request);
+        $dados = $this->normalizarRecorrencia($dados);
         $lancamento->update($dados);
 
         return redirect()->route('lancamentos.index')->with('success', 'Lancamento atualizado com sucesso.');
@@ -103,7 +109,7 @@ class LancamentoController extends Controller
 
     public function destroy(Lancamento $lancamento): RedirectResponse
     {
-        abort_if($lancamento->user_id !== auth()->id(), 403);
+        abort_if($lancamento->user_id !== (int) Auth::id(), 403);
 
         $conta = $lancamento->conta;
         $lancamento->delete();
@@ -117,7 +123,7 @@ class LancamentoController extends Controller
 
     public function baixar(Lancamento $lancamento): RedirectResponse
     {
-        abort_if($lancamento->user_id !== auth()->id(), 403);
+        abort_if($lancamento->user_id !== (int) Auth::id(), 403);
 
         $lancamento->update([
             'status' => 'pago',
@@ -132,8 +138,8 @@ class LancamentoController extends Controller
     private function validar(Request $request): array
     {
         return $request->validate([
-            'conta_id' => ['required', 'exists:contas,id'],
-            'categoria_id' => ['required', 'exists:categorias,id'],
+            'conta_id' => ['required', Rule::exists('contas', 'id')->where('user_id', (int) Auth::id())],
+            'categoria_id' => ['required', Rule::exists('categorias', 'id')->where('user_id', (int) Auth::id())],
             'tipo' => ['required', 'in:pagar,receber'],
             'descricao' => ['required', 'string', 'max:140'],
             'valor' => ['required', 'numeric', 'min:0.01'],
@@ -143,6 +149,36 @@ class LancamentoController extends Controller
             'recorrente' => ['nullable', 'boolean'],
             'frequencia' => ['nullable', 'in:mensal,bimestral,trimestral,anual'],
             'parcelas' => ['nullable', 'integer', 'min:1', 'max:48'],
+        ], [
+            'categoria_id.exists' => 'A categoria selecionada nao pertence ao usuario logado.',
+            'conta_id.exists' => 'A conta selecionada nao pertence ao usuario logado.',
         ]);
+    }
+
+    private function normalizarRecorrencia(array $dados): array
+    {
+        $dados['recorrente'] = (bool) ($dados['recorrente'] ?? false);
+
+        if (!$dados['recorrente']) {
+            $dados['frequencia'] = null;
+            $dados['parcelas'] = 1;
+
+            return $dados;
+        }
+
+        $dados['frequencia'] = $dados['frequencia'] ?? 'mensal';
+        $dados['parcelas'] = max(1, (int) ($dados['parcelas'] ?? 1));
+
+        return $dados;
+    }
+
+    private function mesesPorFrequencia(?string $frequencia): int
+    {
+        return match ($frequencia) {
+            'bimestral' => 2,
+            'trimestral' => 3,
+            'anual' => 12,
+            default => 1,
+        };
     }
 }
