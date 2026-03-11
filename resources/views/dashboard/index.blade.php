@@ -57,8 +57,8 @@
                 <button class="btn btn-primary">Aplicar filtros</button>
             </div>
             <div class="col-md-3 text-md-end">
-                <a href="{{ route('relatorios.lancamentos.pdf') }}" class="btn btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
-                <a href="{{ route('relatorios.lancamentos.excel') }}" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+                <a href="{{ route('relatorios.lancamentos.pdf', request()->query()) }}" target="_blank" rel="noopener" class="btn btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+                <a href="{{ route('relatorios.lancamentos.excel', request()->query()) }}" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
             </div>
         </form>
     </div>
@@ -120,7 +120,7 @@
                             <tr>
                                 <td>
                                     <div class="fw-semibold">{{ $item->descricao }}</div>
-                                    <small class="text-secondary">{{ $item->categoria?->nome }} • {{ $item->conta?->nome }}</small>
+                                    <small class="text-secondary">{{ $item->categoria?->nome }} - {{ $item->conta?->nome }}</small>
                                 </td>
                                 <td>
                                     <span class="badge {{ $item->tipo === 'receber' ? 'text-bg-success' : 'text-bg-danger' }}">

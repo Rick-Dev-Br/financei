@@ -27,13 +27,20 @@
                     <option value="cancelado" @selected(request('status') === 'cancelado')>Cancelado</option>
                 </select>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-5">
                 <label class="form-label">Busca</label>
                 <input type="text" name="q" value="{{ request('q') }}" class="form-control" placeholder="Descricao">
             </div>
-            <div class="col-md-2 d-flex gap-2">
-                <button class="btn btn-primary flex-fill">Filtrar</button>
-                <a href="{{ route('lancamentos.create') }}" class="btn btn-success"><i class="bi bi-plus-lg"></i></a>
+            <div class="col-12 d-flex flex-wrap justify-content-between gap-2">
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-primary">Filtrar</button>
+                    <a href="{{ route('lancamentos.index') }}" class="btn btn-outline-secondary">Limpar</a>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ route('relatorios.lancamentos.pdf', request()->query()) }}" target="_blank" rel="noopener" class="btn btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+                    <a href="{{ route('relatorios.lancamentos.excel', request()->query()) }}" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+                    <a href="{{ route('lancamentos.create') }}" class="btn btn-success"><i class="bi bi-plus-lg"></i> Novo</a>
+                </div>
             </div>
         </form>
     </div>
@@ -59,7 +66,7 @@
                         <tr>
                             <td>
                                 <div class="fw-semibold">{{ $item->descricao }}</div>
-                                <small class="text-secondary">{{ ucfirst($item->tipo) }} • Parcela {{ $item->parcela_atual }}/{{ $item->parcelas }}</small>
+                                <small class="text-secondary">{{ ucfirst($item->tipo) }} - Parcela {{ $item->parcela_atual }}/{{ $item->parcelas }}</small>
                             </td>
                             <td>{{ $item->conta?->nome }}</td>
                             <td>{{ $item->categoria?->nome }}</td>
